@@ -17,8 +17,12 @@ const router: Router = express.Router();
 let storage = multer.diskStorage({
     destination: (req,file,cb) => {
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        let newPath = `./uploads/${ip}`
-        file.path = newPath
+        let uploadFolder = './uploads';
+        let newPath = `./uploads/${ip}`;
+        file.path = newPath;
+        if(!fs.existsSync(uploadFolder)) {
+            fs.mkdirSync(uploadFolder);
+        }
         if (!fs.existsSync(newPath)) {
             fs.mkdirSync(newPath);
         }
