@@ -2,18 +2,20 @@ import {Express, Request, Response} from 'express';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
-import  {uploadIndexObj as upload} from './components/upload';
+import * as path from 'path';
+import {uploadIndexObj as upload} from './components/upload';
 
 dotenv.config();
 const app : Express = express()
 const PORT: any = process.env.PORT || 8000;
-
-app.use(cors());
-
 app.use('/api/uploads',upload.api);
 
-app.get("/", (req: Request, res: Response) => {
-    res.json({msg:"Success!"})
+app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+
+
+
+app.get("/*", (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
 });
 
 app.listen(PORT, async () => {

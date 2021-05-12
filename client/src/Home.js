@@ -14,10 +14,10 @@ const Home = () => {
         data.append('library',library);
         data.append("photo",file);
 
-        axios.post('http://localhost:80/api/uploads/upload', data).then((res) => {
+        axios.post('/api/uploads/upload', data).then((res) => {
             if (res.data.success) {
                 console.log(res.data.filename)
-                setLink(`http://localhost/api/uploads/image/${library}/${res.data.filename}`)
+                setLink(`/api/uploads/image/${library}/${res.data.filename}`)
                 setMessage(`File uploaded at`)
             }
         }).catch((err) => {
