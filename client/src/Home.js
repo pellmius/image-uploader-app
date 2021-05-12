@@ -17,7 +17,7 @@ const Home = () => {
         axios.post('http://localhost:80/api/uploads/upload', data).then((res) => {
             if (res.data.success) {
                 console.log(res.data.filename)
-                setLink(`http://localhost/api/uploads/image/${res.data.filename}`)
+                setLink(`http://localhost/api/uploads/image/${library}/${res.data.filename}`)
                 setMessage(`File uploaded at`)
             }
         }).catch((err) => {

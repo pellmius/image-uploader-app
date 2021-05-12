@@ -28,14 +28,13 @@ let storage = multer.diskStorage({
         cb(null,newPath)
     },
     filename: (req,file,cb) => {
-        cb(null, Date() + '.jpg')
+        cb(null, Date.now() + '.jpg')
     }
 });
 
 let upload: multer.Multer = multer({storage:storage});
 
 router.post('/upload', limiter, upload.single('photo'), (req,res) => {
-    // console.log(req.body.library)
     if (req.file) {
         res.json({success: true, filename:req.file.filename});
     } else {
@@ -43,12 +42,12 @@ router.post('/upload', limiter, upload.single('photo'), (req,res) => {
     }
 });
 
-router.get('/image/:filename', async (req, res) => {
+router.get('/image/:library/:filename', async (req, res) => {
     try {
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        let file : string = req.params.filename
-        if( fs.existsSync(path.join('./uploads', ip.toString(), file)) ) {
-            res.sendFile(file, { root: `./uploads/${ip}` });
+        const library = req.params.library;
+        let file : string = req.params.filename;
+        if( fs.existsSync(path.join('./uploads', library.toString(), file)) ) {
+            res.sendFile(file, { root: `./uploads/${library}` });
         } else {
             res.json({msg:"File does not exist.", sucess: false})
         }
