@@ -4,7 +4,7 @@ import * as express from 'express';
 import * as rateLimit from 'express-rate-limit';
 import * as fs from 'fs';
 import * as path from 'path';
-import {promises} from 'fs';
+
 
 
 const limiter = rateLimit({
@@ -16,9 +16,8 @@ const router: Router = express.Router();
 
 let storage = multer.diskStorage({
     destination: (req,file,cb) => {
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         let uploadFolder = './uploads';
-        let newPath = `./uploads/${ip}`;
+        let newPath = `./uploads/${req.body.library}`;
         file.path = newPath;
         if(!fs.existsSync(uploadFolder)) {
             fs.mkdirSync(uploadFolder);
@@ -29,14 +28,19 @@ let storage = multer.diskStorage({
         cb(null,newPath)
     },
     filename: (req,file,cb) => {
-        cb(null, Date.now() + '.jpg')
+        cb(null, Date() + '.jpg')
     }
 });
 
 let upload: multer.Multer = multer({storage:storage});
 
-router.post('/upload', limiter, upload.single('photo'), (req,res ) => {
-    res.json({success: true, filename:req.file.filename});
+router.post('/upload', limiter, upload.single('photo'), (req,res) => {
+    // console.log(req.body.library)
+    if (req.file) {
+        res.json({success: true, filename:req.file.filename});
+    } else {
+        res.json({success: false})
+    }
 });
 
 router.get('/image/:filename', async (req, res) => {

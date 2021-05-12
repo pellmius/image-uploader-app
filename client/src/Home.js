@@ -6,11 +6,12 @@ const Home = () => {
     const [fileName,setFileName] = useState('No file chosen')
     const [message,setMessage] = useState('');
     const [link,setLink] = useState('');
+    const [library,setLibrary] = useState('');
     const uploadFile = e => {
         e.preventDefault();
         const data = new FormData();
         const file = e.target[0].files[0];
-        data.append("name",fileName);
+        data.append('library',library);
         data.append("photo",file);
 
         axios.post('http://localhost:80/api/uploads/upload', data).then((res) => {
@@ -29,20 +30,25 @@ const Home = () => {
     }
     return (
         <div className='home-div' encType="multipart/form-data">
-            <h1>PellmUploader</h1>
-            <p>Image uploader service for my (Guilherme Almeida) backend development portfolio.</p>    
-            <form onSubmit={uploadFile} onChange={displayFileName}>
-                <input type="file" accept='image/*' id="myFile" name="filename" hidden/>
-                <label htmlFor='myFile'>Choose file</label>
+            <h1 style={{fontWeight:'300'}}>PellmUploader</h1>
+            <p>Image uploader service for my (Guilherme Almeida) backend development portfolio.</p>
+            <div className='inside-div'>    
+                <input onChange={e => setLibrary(e.target.value)} className='libraryInput' type='text' placeholder="Library"></input>
                 <br/>
-                <br/>
-                <br/>
-
-                <span id="file-chosen">{fileName}</span>
                 <br></br>
-                <input type="submit" id='submit'/>
-            </form>
-            <h2>{message} <a href={link}>{link}</a></h2>
+                <form onSubmit={uploadFile} onChange={displayFileName}>
+                    <input type="file" accept='image/*' id="myFile" name="filename" hidden/>
+                    <label htmlFor='myFile'>Choose file</label>
+                    <br/>
+                    <br/>
+
+                    <span id="file-chosen">{fileName}</span>
+                    <br></br>
+                    <input type="submit" id='submit'/>
+                </form>
+                <h2>{message} <a href={link}>{link}</a></h2>
+            </div>
+
         </div>
         
     );
